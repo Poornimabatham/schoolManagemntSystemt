@@ -1,0 +1,228 @@
+.widget-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.07);
+    border: 1px solid #f0f0f4;
+}
+
+.widget-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1c2e;
+    margin-bottom: 16px;
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.widget-header .widget-title {
+    margin-bottom: 0;
+}
+
+.pending-badge {
+    background: #fff7ed;
+    color: #f97316;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid #fed7aa;
+}
+
+/* Exams */
+.exam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.exam-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.exam-icon {
+    width: 36px;
+    height: 36px;
+    background: #fff7ed;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.exam-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.exam-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1c2e;
+}
+
+.exam-date {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.exam-badge {
+    background: #fff7ed;
+    color: #f97316;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    border: 1px solid #fed7aa;
+}
+
+/* Fees */
+.fee-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.fee-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.fee-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+    flex-shrink: 0;
+}
+
+.fee-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.fee-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1c2e;
+}
+
+.fee-meta {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fee-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.fee-status {
+    font-size: 11px;
+    background: #fff7ed;
+    color: #f97316;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid #fed7aa;
+    font-weight: 600;
+}
+
+.fee-amount {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1c2e;
+}
+
+/* Calendar */
+.cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.cal-month {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1c2e;
+}
+
+.cal-nav {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0 6px;
+    line-height: 1;
+}
+
+.cal-nav:hover {
+    color: #f97316;
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+}
+
+.cal-day-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9ca3af;
+    padding: 4px 0;
+}
+
+.cal-day {
+    font-size: 13px;
+    color: #374151;
+    padding: 6px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cal-day:hover:not(.empty) {
+    background: #fff7ed;
+    color: #f97316;
+}
+
+.cal-day.today {
+    background: #f97316;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 50%;
+}
+
+.cal-day.empty {
+    cursor: default;
+}

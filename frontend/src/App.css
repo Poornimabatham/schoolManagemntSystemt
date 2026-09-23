@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #f4f5f7;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  border: none;
+}
+
+.app-layout {
+  display: flex;
+}
+
+.app-main {
+  margin-left: 230px;
+  flex: 1;
+  min-height: 100vh;
+}
+
+.app-content {
+  margin-top: 62px;
+  padding: 4px;
+}
