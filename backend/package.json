@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-   "seed:roles": "node seeds/seedRolePermissions.js"
+   "seed:classes": "node seeds/seedClasses.js"
   },
   "author": "",
   "license": "ISC",

@@ -3,18 +3,28 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./Routes/authRoutes");
+const StudentRoutes = require("./Routes/StudentRoute");
+const classRoutes = require("./Routes/classRoute");
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/auth", authRoutes);
+app.use("/api/student", StudentRoutes);
+app.use("/api/classes", classRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+// Connect to MongoDB FIRST, then start listening
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
-
-app.use("/api/auth", authRoutes);
-
-app.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${process.env.PORT}`),
-);
+  .then(() => {
+    console.log("MongoDB connected successfully");
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  })
+  .catch((err) => {
+    console.error("MongoDB Connection Error:", err.message);
+    process.exit(1);
+  });
