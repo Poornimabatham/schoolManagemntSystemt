@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../api/axios";
-import "../styles/AddStudentModal.css"; // Ensure this import is present
-export default function AddStudent({ isOpen, onClose, classes, onStudentAdded }) {
-  // Initialize state using your specific fields & default values
-  const [formData, setFormData] = useState({
+import "../styles/AddStudentModal.css";
+
+export default function AddStudent({
+  isOpen,
+  onClose,
+  classes = [],
+  initialData = null,
+  onStudentAdded,
+}) {
+  const defaultFormData = {
     name: "",
     email: "",
     classId: "",
@@ -12,15 +18,50 @@ export default function AddStudent({ isOpen, onClose, classes, onStudentAdded })
     parentName: "",
     phone: "",
     status: "Active",
-    joinDate: new Date().toISOString().split("T")[0], // Defaults to today YYYY-MM-DD
-  });
+    joinDate: new Date().toISOString().split("T")[0],
+  };
 
+  const [formData, setFormData] = useState(defaultFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Populate form data when initialData changes or when modal opens
+  useEffect(() => {
+    if (initialData && isOpen) {
+      // Extract MongoDB _id or string ID cleanly for classId
+      const extractedClassId =
+        typeof initialData.classId === "object"
+          ? initialData.classId?._id || initialData.classId?.id || ""
+          : initialData.classId || "";
+
+      // Format joinDate if present (ensures YYYY-MM-DD for date input)
+      let formattedJoinDate = new Date().toISOString().split("T")[0];
+      if (initialData.joinDate) {
+        formattedJoinDate = new Date(initialData.joinDate)
+          .toISOString()
+          .split("T")[0];
+      }
+
+      setFormData({
+        name: initialData.name || "",
+        email: initialData.email || "",
+        classId: extractedClassId,
+        rollNo: initialData.rollNo || "",
+        gender: initialData.gender || "Male",
+        parentName: initialData.parentName || "",
+        phone: initialData.phone || "",
+        status: initialData.status || "Active",
+        joinDate: formattedJoinDate,
+      });
+    } else if (!isOpen) {
+      // Reset form when modal closes
+      setFormData(defaultFormData);
+    }
+    setError("");
+  }, [initialData, isOpen]);
+
   if (!isOpen) return null;
 
-  // Single dynamic change handler for all inputs & selects
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -29,34 +70,31 @@ export default function AddStudent({ isOpen, onClose, classes, onStudentAdded })
     }));
   };
 
-  // Submit form data to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const response = await api.post("/student", formData);
+      const studentDbId = initialData?._id || initialData?.id;
 
-      if (response.data?.success || response.status === 201) {
-        onStudentAdded(); // Triggers table refresh in layout
-        // Reset form to default state
-        setFormData({
-          name: "",
-          email: "",
-          classId: "",
-          rollNo: "",
-          gender: "Male",
-          parentName: "",
-          phone: "",
-          status: "Active",
-          joinDate: new Date().toISOString().split("T")[0],
-        });
+      let response;
+      if (studentDbId) {
+        // UPDATE Existing Student
+        response = await api.put(`/student/${studentDbId}`, formData);
+      } else {
+        // CREATE New Student
+        response = await api.post("/student", formData);
+      }
+
+      if (response.data?.success || response.status === 200 || response.status === 201) {
+        onStudentAdded(); // Triggers table refresh
+        setFormData(defaultFormData);
         onClose();
       }
     } catch (err) {
       setError(
-        err.response?.data?.message || err.message || "Failed to add student"
+        err.response?.data?.message || err.message || "Failed to save student data"
       );
     } finally {
       setLoading(false);
@@ -67,7 +105,7 @@ export default function AddStudent({ isOpen, onClose, classes, onStudentAdded })
     <div className="modal-overlay">
       <div className="modal-card">
         <div className="modal-header">
-          <h2>Add New Student</h2>
+          <h2>{initialData ? "Edit Student" : "Add New Student"}</h2>
           <button className="close-btn" onClick={onClose}>
             &times;
           </button>
@@ -113,11 +151,14 @@ export default function AddStudent({ isOpen, onClose, classes, onStudentAdded })
                 required
               >
                 <option value="">Select Class</option>
-                {classes.map((cls) => (
-                  <option key={cls._id} value={cls._id}>
-                    {cls.name || `Class ${cls.grade}-${cls.section}`}
-                  </option>
-                ))}
+                {classes.map((cls) => {
+                  const clsId = cls._id || cls.id;
+                  return (
+                    <option key={clsId} value={clsId}>
+                      {cls.name || `Class ${cls.grade}-${cls.section}`}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
@@ -210,7 +251,11 @@ export default function AddStudent({ isOpen, onClose, classes, onStudentAdded })
               Cancel
             </button>
             <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? "Adding..." : "Add Student"}
+              {loading
+                ? "Saving..."
+                : initialData
+                ? "Update Student"
+                : "Add Student"}
             </button>
           </div>
         </form>

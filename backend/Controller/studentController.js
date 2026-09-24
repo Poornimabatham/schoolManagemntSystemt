@@ -151,7 +151,7 @@ const statusChange = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-
+    console.log("Status Change Request:", { id, status });
     // Validate status input
     const allowedStatuses = ["Active", "Inactive", "Pending"];
     if (!allowedStatuses.includes(status)) {
@@ -194,5 +194,5 @@ module.exports = {
   createStudent,
   updateStudent,
   deleteStudent,
-  statusChange
+  statusChange,
 };
