@@ -66,3 +66,5 @@
 .sidebar-label:hover {
     color: #fff;
 }
+.sidebar-nav   a{
+    text-decoration: none;}
