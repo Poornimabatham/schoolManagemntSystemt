@@ -26,4 +26,19 @@ const getAllClasses = async (req, res) => {
   }
 };
 
-module.exports = { getAllClasses };
+const totalClasses = async (req, res) => {
+  try {
+    const totalClasses = await Class.countDocuments();
+    res.status(200).json({
+      success: true,
+      count: totalClasses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error fetching total classes",
+      error: error.message,
+    });
+  }
+}
+
+module.exports = { getAllClasses, totalClasses };

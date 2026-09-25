@@ -1,0 +1,377 @@
+/* Container Layout */
+.student-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Header Section */
+.student-header {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.student-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1e293b;
+}
+
+.student-subtitle {
+    margin: 4px 0 0 0;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.add-student-btn {
+    background-color: #4f46e5;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-student-btn:hover {
+    background-color: #4338ca;
+}
+
+/* Filter Bar Container */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: #ffffff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+}
+
+/* 1. Input Search Field */
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.search-input {
+    width: 100%;
+    padding: 9px 12px 9px 36px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* Dropdown Filters */
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #475569;
+}
+
+.filter-select {
+    padding: 9px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    color: #334155;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.filter-select:focus {
+    border-color: #4f46e5;
+}
+
+/* Table Card Component */
+.table-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.student-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.student-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.student-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Student Info Stack */
+.student-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.student-email {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Badges */
+.grade-badge {
+    background-color: #e0e7ff;
+    color: #3730a3;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-active {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.status-inactive {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+/* Text Formatting Utility */
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-primary {
+    color: #4f46e5;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+}
+
+.icon-btn:hover {
+    background-color: #f1f5f9;
+}
+
+.no-data {
+    text-align: center;
+    padding: 30px;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Table Footer */
+.table-footer {
+    padding: 14px 16px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+
+/* 1. Make only this container scrollable */
+.table-scroll-container {
+    max-height: 400px;
+    /* Set your desired height limit */
+    overflow-y: auto;
+    /* Enables vertical scroll when table exceeds max-height */
+    overflow-x: auto;
+    /* Enables horizontal scroll for mobile responsiveness */
+}
+
+/* 2. Optional: Keep table header fixed at the top while scrolling */
+.student-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f9fafb;
+    /* Must have a background color so rows don't show behind it */
+    z-index: 1;
+}
+
+/* Footer styling */
+.table-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Container for dropdown positioning */
+.status-dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Badge button style */
+.status-badge {
+    border: none;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.status-badge.updating {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* Badge variants */
+.status-active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+/* Dropdown Popup Menu */
+.status-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    width: 120px;
+    overflow: hidden;
+}
+
+.status-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #374151;
+    transition: background-color 0.15s ease;
+}
+
+.status-option:hover {
+    background-color: #f3f4f6;
+}
+
+.status-option.active-selection {
+    font-weight: 600;
+    background-color: #eff6ff;
+}
+
+/* Colored Dots in Dropdown Options */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-active {
+    background-color: #10b981;
+}
+
+.dot-inactive {
+    background-color: #ef4444;
+}
+
+.dot-pending {
+    background-color: #f59e0b;
+}

@@ -1,33 +1,45 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import api from "../api/axios";
 import "../styles/Dashboard.css";
-import AttendanceChart from "../components/AttendanceCharts";
-import FeeChart from "../components/FeeChart";
-import ClassPerformanceChart from "../components/ClassPerformanceChart";
-import RecentActivity from "../components/RecentActivity";
-import UpcomingExams from "../components/UpcomingExams";
-import PendingFees from "../components/PendingFees";
-import SchoolCalendar from "../components/SchoolCalendar";
+
+// Lazy-loaded components — code is fetched only when this component renders
+const AttendanceChart = lazy(() => import("../components/AttendanceCharts"));
+const FeeChart = lazy(() => import("../components/FeeChart"));
+const ClassPerformanceChart = lazy(() => import("../components/ClassPerformanceChart"));
+const RecentActivity = lazy(() => import("../components/RecentActivity"));
+const UpcomingExams = lazy(() => import("../components/UpcomingExams"));
+const PendingFees = lazy(() => import("../components/PendingFees"));
+const SchoolCalendar = lazy(() => import("../components/SchoolCalendar"));
 
 export default function Dashboard() {
   const [totalStudents, setTotalStudents] = useState("Loading...");
+  const [totalClasses, setTotalClasses] = useState("Loading...");
 
   useEffect(() => {
-    const fetchStudentCount = async () => {
-      try {
-        const response = await api.get("http://localhost:5000/api/dashbaord/count");
-        if (response.data.success) {
-          setTotalStudents(response.data.count);
-        } else {
-          setTotalStudents(0);
-        }
-      } catch (error) {
-        console.error("Failed to fetch student count:", error);
+    const fetchDashboardData = async () => {
+      const [studentResult, classResult] = await Promise.allSettled([
+        api.get("/dashbaord/count"),
+        api.get("/classes/count")
+      ]);
+
+      // Handle student count result
+      if (studentResult.status === "fulfilled" && studentResult.value.data.success) {
+        setTotalStudents(studentResult.value.data.count);
+      } else {
+        console.error("Failed to fetch student count:", studentResult.reason);
         setTotalStudents("Error");
+      }
+
+      // Handle class count result
+      if (classResult.status === "fulfilled" && classResult.value.data.success) {
+        setTotalClasses(classResult.value.data.count);
+      } else {
+        console.error("Failed to fetch class count:", classResult.reason);
+        setTotalClasses("Error");
       }
     };
 
-    fetchStudentCount();
+    fetchDashboardData();
   }, []);
 
   const cards = [
@@ -45,7 +57,7 @@ export default function Dashboard() {
     },
     {
       label: "Total Classes",
-      value: "32",
+      value: totalClasses,
       icon: "📚",
       bg: "linear-gradient(90deg, #f7971e 0%, #ffd200 100%)"
     },
@@ -61,7 +73,11 @@ export default function Dashboard() {
     <div className="dashboard">
       <div className="dashboard-grid">
         {cards.map((card) => (
-          <div className="dashboard-card" key={card.label} style={{ background: card.bg }}>
+          <div
+            className="dashboard-card"
+            key={card.label}
+            style={{ background: card.bg }}
+          >
             <div className="card-icon" style={{ background: card.bg }}>
               {card.icon}
             </div>
@@ -74,19 +90,25 @@ export default function Dashboard() {
       </div>
 
       <div className="charts-row">
-        <AttendanceChart />
-        <FeeChart />
+        <Suspense fallback={<div className="loading-box">Loading charts...</div>}>
+          <AttendanceChart />
+          <FeeChart />
+        </Suspense>
       </div>
 
       <div className="charts-bottom">
-        <ClassPerformanceChart />
-        <RecentActivity />
+        <Suspense fallback={<div className="loading-box">Loading...</div>}>
+          <ClassPerformanceChart />
+          <RecentActivity />
+        </Suspense>
       </div>
 
       <div className="widgets-row">
-        <UpcomingExams />
-        <PendingFees />
-        <SchoolCalendar />
+        <Suspense fallback={<div className="loading-box">Loading widgets...</div>}>
+          <UpcomingExams />
+          <PendingFees />
+          <SchoolCalendar />
+        </Suspense>
       </div>
     </div>
   );
