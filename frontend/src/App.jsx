@@ -18,7 +18,7 @@ function App() {
           {/* Public Auth Routes */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup" element={<Signup />} />side
 
           {/* Protected Routes sharing Sidebar and Navbar */}
           <Route element={<MainLayout />}>
@@ -26,8 +26,8 @@ function App() {
             <Route path="/students" element={<StudentLayout />} />
             <Route path="/classes" element={<ClassLayout />} />
             {/* Add more module routes here */}
-            {/* <Route path="/teachers" element={<TeacherLayout />} /> */}
-            {/* <Route path="/attendance" element={<AttendanceLayout />} /> */}
+            {/* <Route path="/teachers" element={<TeacherLayout />} />
+            <Route path="/attendance" element={<AttendanceLayout />} /> */}
           </Route>
         </Routes>
       </BrowserRouter>

@@ -187,6 +187,21 @@ const statusChange = async (req, res) => {
     });
   }
 };
+const totalStudentsCount = async (req, res) => {
+  try {
+    const totalStudents = await Student.countDocuments();
+    res.status(200).json({
+      success: true,
+      count: totalStudents,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error fetching total students",
+      error: error.message,
+    });
+  }
+};
+
 
 module.exports = {
   getAllStudents,
@@ -195,4 +210,6 @@ module.exports = {
   updateStudent,
   deleteStudent,
   statusChange,
+    totalStudentsCount,
+
 };

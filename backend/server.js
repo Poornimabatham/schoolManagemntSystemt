@@ -5,7 +5,7 @@ const cors = require("cors");
 const authRoutes = require("./Routes/authRoutes");
 const StudentRoutes = require("./Routes/StudentRoute");
 const classRoutes = require("./Routes/classRoute");
-
+const dashboard = require("./Routes/dashboardRoute")
 const app = express();
 
 app.use(cors());
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/student", StudentRoutes);
 app.use("/api/classes", classRoutes);
+app.use("/api/dashbaord", dashboard);
 
 const PORT = process.env.PORT || 5000;
 
