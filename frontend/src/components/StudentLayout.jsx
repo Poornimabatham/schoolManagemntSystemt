@@ -1,82 +1,21 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
 import "../styles/StudentLayout.css";
 import { useDebounce } from "../hooks/useDebounce";
-import AddStudent from "./AddStudent";
+import StatusDropdown from "./StatusDropdown";
 
-// Custom status menu dropdown component
-const StatusDropdown = ({ studentId, currentStatus, onStatusUpdated }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const dropdownRef = useRef(null);
+// 1. Code-splitting: Dynamic import for modal chunk
+const AddStudent = lazy(() => import("./AddStudent"));
 
-  const statuses = ["Active", "Inactive", "Pending"];
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleStatusSelect = async (newStatus) => {
-    if (newStatus === currentStatus) {
-      setIsOpen(false);
-      return;
-    }
-
-    try {
-      setIsUpdating(true);
-      await api.patch(`/student/${studentId}/status`, { status: newStatus });
-      onStatusUpdated(studentId, newStatus);
-    } catch (err) {
-      alert(err.response?.data?.message || "Failed to update status");
-    } finally {
-      setIsUpdating(false);
-      setIsOpen(false);
-    }
-  };
-
-  return (
-    <div className="status-dropdown-wrapper" ref={dropdownRef}>
-      <button
-        type="button"
-        className={`status-badge status-${currentStatus?.toLowerCase()} ${
-          isUpdating ? "updating" : ""
-        }`}
-        onClick={() => setIsOpen((prev) => !prev)}
-        disabled={isUpdating}
-      >
-        {isUpdating ? "Updating..." : `${currentStatus} ▾`}
-      </button>
-
-      {isOpen && (
-        <div className="status-menu">
-          {statuses.map((status) => (
-            <div
-              key={status}
-              className={`status-option status-option-${status.toLowerCase()} ${
-                status === currentStatus ? "active-selection" : ""
-              }`}
-              onClick={() => handleStatusSelect(status)}
-            >
-              <span className={`status-dot dot-${status.toLowerCase()}`}></span>
-              {status}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+// 2. Prefetching function for mouse hover / focus events
+const prefetchAddStudent = () => {
+  import("./AddStudent");
 };
 
 export default function StudentLayout() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null); // Holds student being edited
+  const [editingStudent, setEditingStudent] = useState(null);
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -119,7 +58,6 @@ export default function StudentLayout() {
     fetchData();
   }, [fetchData]);
 
-  // Update status locally for snappy UX
   const handleStatusUpdatedLocally = (studentId, newStatus) => {
     setStudents((prevStudents) =>
       prevStudents.map((s) =>
@@ -130,7 +68,6 @@ export default function StudentLayout() {
     );
   };
 
-  // 1. DELETE API CALL
   const handleDelete = async (id, name) => {
     const isConfirmed = window.confirm(
       `Are you sure you want to delete ${name || "this student"}?`
@@ -139,20 +76,19 @@ export default function StudentLayout() {
 
     try {
       await api.delete(`/student/${id}`);
-      // Remove deleted item locally without full re-fetch
-      setStudents((prev) => prev.filter((student) => (student._id || student.id) !== id));
+      setStudents((prev) =>
+        prev.filter((student) => (student._id || student.id) !== id)
+      );
     } catch (err) {
       alert(err.response?.data?.message || "Failed to delete student");
     }
   };
 
-  // 2. OPEN MODAL FOR EDIT
   const handleEdit = (student) => {
     setEditingStudent(student);
     setIsModalOpen(true);
   };
 
-  // 3. OPEN MODAL FOR CREATE
   const handleAddNew = () => {
     setEditingStudent(null);
     setIsModalOpen(true);
@@ -205,7 +141,12 @@ export default function StudentLayout() {
           </p>
         </div>
 
-        <button className="add-student-btn" onClick={handleAddNew}>
+        <button
+          className="add-student-btn"
+          onClick={handleAddNew}
+          onMouseEnter={prefetchAddStudent}
+          onFocus={prefetchAddStudent}
+        >
           + Add New Student
         </button>
       </div>
@@ -340,6 +281,8 @@ export default function StudentLayout() {
                           <button
                             className="icon-btn edit-btn"
                             title="Edit"
+                            onMouseEnter={prefetchAddStudent}
+                            onFocus={prefetchAddStudent}
                             onClick={() => handleEdit(student)}
                           >
                             ✏️
@@ -377,17 +320,21 @@ export default function StudentLayout() {
         </div>
       </div>
 
-      {/* Modal supporting both Add & Edit modes */}
-      <AddStudent
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingStudent(null);
-        }}
-        classes={classes}
-        initialData={editingStudent}
-        onStudentAdded={fetchData}
-      />
+      {/* 3. Suspense wrapper around dynamic modal */}
+      {isModalOpen && (
+        <Suspense fallback={<div className="modal-loading-spinner">Loading Form...</div>}>
+          <AddStudent
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditingStudent(null);
+            }}
+            classes={classes}
+            initialData={editingStudent}
+            onStudentAdded={fetchData}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

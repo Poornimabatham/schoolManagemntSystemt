@@ -1,6 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import api from "../api/axios";
 import "../styles/AddStudentModal.css";
+
+const DEFAULT_FORM_DATA = {
+  name: "",
+  email: "",
+  classId: "",
+  rollNo: "",
+  gender: "Male",
+  parentName: "",
+  phone: "",
+  status: "Active",
+  joinDate: new Date().toISOString().split("T")[0],
+};
 
 export default function AddStudent({
   isOpen,
@@ -9,32 +21,22 @@ export default function AddStudent({
   initialData = null,
   onStudentAdded,
 }) {
-  const defaultFormData = {
-    name: "",
-    email: "",
-    classId: "",
-    rollNo: "",
-    gender: "Male",
-    parentName: "",
-    phone: "",
-    status: "Active",
-    joinDate: new Date().toISOString().split("T")[0],
-  };
-
-  const [formData, setFormData] = useState(defaultFormData);
+  const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Populate form data when initialData changes or when modal opens
+  const resetForm = useCallback(() => {
+    setFormData(DEFAULT_FORM_DATA);
+    setError("");
+  }, []);
+
   useEffect(() => {
     if (initialData && isOpen) {
-      // Extract MongoDB _id or string ID cleanly for classId
       const extractedClassId =
         typeof initialData.classId === "object"
           ? initialData.classId?._id || initialData.classId?.id || ""
           : initialData.classId || "";
 
-      // Format joinDate if present (ensures YYYY-MM-DD for date input)
       let formattedJoinDate = new Date().toISOString().split("T")[0];
       if (initialData.joinDate) {
         formattedJoinDate = new Date(initialData.joinDate)
@@ -54,20 +56,15 @@ export default function AddStudent({
         joinDate: formattedJoinDate,
       });
     } else if (!isOpen) {
-      // Reset form when modal closes
-      setFormData(defaultFormData);
+      resetForm();
     }
-    setError("");
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, resetForm]);
 
   if (!isOpen) return null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -78,23 +75,24 @@ export default function AddStudent({
     try {
       const studentDbId = initialData?._id || initialData?.id;
 
-      let response;
-      if (studentDbId) {
-        // UPDATE Existing Student
-        response = await api.put(`/student/${studentDbId}`, formData);
-      } else {
-        // CREATE New Student
-        response = await api.post("/student", formData);
-      }
+      const response = studentDbId
+        ? await api.put(`/student/${studentDbId}`, formData)
+        : await api.post("/student", formData);
 
-      if (response.data?.success || response.status === 200 || response.status === 201) {
-        onStudentAdded(); // Triggers table refresh
-        setFormData(defaultFormData);
+      if (
+        response.data?.success ||
+        response.status === 200 ||
+        response.status === 201
+      ) {
+        onStudentAdded();
+        resetForm();
         onClose();
       }
     } catch (err) {
       setError(
-        err.response?.data?.message || err.message || "Failed to save student data"
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to save student data"
       );
     } finally {
       setLoading(false);
@@ -106,7 +104,7 @@ export default function AddStudent({
       <div className="modal-card">
         <div className="modal-header">
           <h2>{initialData ? "Edit Student" : "Add New Student"}</h2>
-          <button className="close-btn" onClick={onClose}>
+          <button className="close-btn" onClick={onClose} type="button">
             &times;
           </button>
         </div>

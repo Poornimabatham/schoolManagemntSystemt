@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true, // Explicitly enforce indexing
     },
     password: {
       type: String,
@@ -52,5 +53,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }, // adds createdAt, updatedAt automatically
 );
+// Optimize query performance for role-based lookups
+userSchema.index({ role: 1 });
 
 module.exports = mongoose.model("User", userSchema);
