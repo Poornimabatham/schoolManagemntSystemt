@@ -14,12 +14,16 @@ const SchoolCalendar = lazy(() => import("../components/SchoolCalendar"));
 export default function Dashboard() {
   const [totalStudents, setTotalStudents] = useState("Loading...");
   const [totalClasses, setTotalClasses] = useState("Loading...");
+  const [totalTeachers, setTotalTeacher] = useState("Loading...");
+
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const [studentResult, classResult] = await Promise.allSettled([
+      const [studentResult, classResult, teacherResult] = await Promise.allSettled([
         api.get("/dashbaord/count"),
-        api.get("/classes/count")
+        api.get("/classes/count"),
+        api.get("/teacher/count")
+
       ]);
 
       // Handle student count result
@@ -37,8 +41,16 @@ export default function Dashboard() {
         console.error("Failed to fetch class count:", classResult.reason);
         setTotalClasses("Error");
       }
+      // Handle class count result
+      if (teacherResult.status === "fulfilled" && teacherResult.value.data.success) {
+        setTotalTeacher(teacherResult.value.data.count);
+      } else {
+        console.error("Failed to fetch class count:", teacherResult.reason);
+        setTotalTeacher("Error");
+      }
     };
 
+    
     fetchDashboardData();
   }, []);
 
@@ -51,7 +63,7 @@ export default function Dashboard() {
     },
     {
       label: "Total Teachers",
-      value: "84",
+      value: totalTeachers,
       icon: "👨‍🏫",
       bg: "linear-gradient(90deg, #11998e 0%, #38ef7d 100%)"
     },
