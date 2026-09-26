@@ -6,6 +6,7 @@ const authRoutes = require("./Routes/authRoutes");
 const StudentRoutes = require("./Routes/StudentRoute");
 const classRoutes = require("./Routes/classRoute");
 const dashboard = require("./Routes/dashboardRoute")
+const teacher = require("./Routes/teacherRoute")
 const app = express();
 
 app.use(cors());
@@ -15,6 +16,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/student", StudentRoutes);
 app.use("/api/classes", classRoutes);
 app.use("/api/dashbaord", dashboard);
+app.use("/api/teacher", teacher);
+
 
 const PORT = process.env.PORT || 5000;
 

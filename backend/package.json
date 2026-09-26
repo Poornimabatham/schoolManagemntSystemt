@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-   "seed:classes": "node seeds/seedClasses.js"
+   "seed:teacher": "node seeds/seedTeacher.js"
   },
   "author": "",
   "license": "ISC",

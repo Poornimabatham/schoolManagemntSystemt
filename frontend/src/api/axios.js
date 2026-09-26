@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://schoolmanagemntsystem.onrender.com/api",
+  // baseURL: "https://schoolmanagemntsystem.onrender.com/api",s
 
-  // baseURL: "http://localhost:5000/api",
+  baseURL: "http://localhost:5000/api",
 
   headers: {
     "Content-Type": "application/json",
